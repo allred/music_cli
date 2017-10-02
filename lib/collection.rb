@@ -12,11 +12,13 @@ class Collection
   end
 
   def create(document)
+    raise TypeError unless document.is_a? Hash
     @collection[next_id] = document
   end
 
   def read(query)
     return @collection if query == 'all'
+    raise TypeError unless query.is_a? Hash
     results = []
     @collection.values.each do |doc|
 
@@ -44,9 +46,11 @@ class Collection
   end
 
   def update()
+    raise NotImplementedError
   end
 
   def delete()
+    raise NotImplementedError
   end
 
   def size()

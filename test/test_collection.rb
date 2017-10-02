@@ -10,9 +10,15 @@ class CollectionTest < Minitest::Test
     assert_empty @collection.collection
   end
 
-  def test_add
+  def test_create
     @collection.create({some: "thing"})
     assert_equal @collection.size, 1
+  end
+
+  def test_create_bad_type_array
+    assert_raises TypeError do
+      @collection.create(['hi', 'there'])
+    end
   end
 
   def test_read_all
