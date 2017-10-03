@@ -58,6 +58,7 @@ class Cli
     begin
       command, title = /^(\S+)\s+"(.*?)"/.match(input).captures
       @music.update({title: title}, {played: true})
+      return %Q%You're listening to "#{title}"%
     rescue
       return %Q%Failed to play item, syntax is: play "title"%
     end
