@@ -25,7 +25,7 @@ class CollectionTest < Minitest::Test
     @collection.create({some: "thing"})
     @collection.create({some: "otherthing"})
     result = @collection.read('all')
-    assert_equal result.keys.length, 2
+    assert_equal 2, result.length
   end
 
   def test_read_one_item

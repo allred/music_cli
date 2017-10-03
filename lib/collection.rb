@@ -17,10 +17,13 @@ class Collection
   end
 
   def read(query)
-    return @collection if query == 'all'
-    raise TypeError unless query.is_a? Hash
     results = []
     @collection.each do |key, doc|
+      if query == 'all'
+        results.push(Hash[key, doc])
+        next
+      end
+
 
       # skip document if none of the query keys are in the document
       # or if the query has more keys than the document

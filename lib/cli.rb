@@ -61,7 +61,7 @@ class Cli
     # show all
 
     if words[1] =~ /^all$/i && words[2] == nil
-      @music.read('all').each do |index, doc|
+      @music.read('all').each do |doc|
         docs.push(doc)
       end
 
@@ -69,14 +69,14 @@ class Cli
 
     elsif words[1] =~ /^all$/i && words[2] =~ /^by$/i
       artist = /^.*"(.*?)"/.match(input).captures[0]
-      @music.read({artist: artist}).each do |record|
-        docs.push(record)
+      @music.read({artist: artist}).each do |doc|
+        docs.push(doc)
       end
 
     # show unplayed
 
     elsif words[1] =~ /^unplayed$/i && words[2] == nil
-      @music.read({unplayed: true}).each do |index, doc|
+      @music.read({unplayed: true}).each do |doc|
         docs.push(doc)
       end
 
