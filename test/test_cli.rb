@@ -9,9 +9,6 @@ class CliTest < Minitest::Test
     @artist = "Some Test Artist"
   end
 
-  def teardown
-  end
-
   def test_add_valid
     assert_equal %Q%Added "#{@title}" by #{@artist}%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
     assert_equal 1, @cli.music.size
@@ -29,12 +26,41 @@ class CliTest < Minitest::Test
     assert_equal 2, shown.length
   end
 
-  def test_show_all_by
+  def test_show_all_by_valid
     assert_match %r%Added%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
     assert_match %r%Added%, @cli.add(%Q%add "#{@title}x" "#{@artist}"%)
     assert_match %r%Added%, @cli.add(%Q%add "#{@title}x" "#{@artist}x"%)
     shown = @cli.show(%Q%show all by "#{@artist}"%)
     assert_equal 2, shown.length
+  end
+
+  def test_show_all_by_invalid
+    assert_match %r%Added%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
+    shown = @cli.show(%Q%show all by%)
+    assert_equal 0, shown.length
+  end
+
+  def test_show_unplayed
+    assert_match %r%Added%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
+    assert_match %r%Added%, @cli.add(%Q%add "#{@title}x" "#{@artist}"%)
+    shown = @cli.show(%Q%show unplayed%)
+    assert_equal 2, shown.length
+  end
+
+  def test_show_unplayed_by_valid
+    assert_match %r%Added%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
+    assert_match %r%Added%, @cli.add(%Q%add "#{@title}x" "#{@artist}"%)
+    shown = @cli.show(%Q%show unplayed by "#{@artist}"%)
+    assert_equal 2, shown.length
+  end
+
+  def test_show_unplayed_by_invalid
+    assert_match %r%Added%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
+    shown = @cli.show(%Q%show unplayed by%)
+    assert_equal 0, shown.length
+  end
+
+  def test_play
   end
 
   def test_quit

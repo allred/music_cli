@@ -1,6 +1,5 @@
 class Collection
-  attr_accessor :collection
-  attr_reader :id
+  attr_reader :collection, :id
 
   def initialize()
     @collection = {}
@@ -38,10 +37,14 @@ class Collection
       if doc == query
         results.push(Hash[key, doc])
       else
+        query_matches = true
         query.keys.each do |qk|
-          if doc.has_key?(qk) && doc.fetch(qk) == query.fetch(qk)
-            results.push(Hash[key, doc])
+          if !doc.has_key?(qk) || doc.fetch(qk) != query.fetch(qk)
+            query_matches = false
           end
+        end
+        if query_matches
+          results.push(Hash[key, doc])
         end
       end
     end
