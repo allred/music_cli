@@ -17,8 +17,16 @@ class Cli
     end
   end
 
-  def puts_cli(string)
-    puts "\n#{string}\n\n"
+  def puts_cli(input)
+    if input.is_a? String
+      puts "\n#{input}\n\n"
+    elsif input.is_a? Array
+      print "\n"
+      input.each do |l|
+        puts l
+      end
+      puts "\n"
+    end
   end
 
   def handle_io(input)
@@ -28,18 +36,16 @@ class Cli
       puts_cli "Bye!"
       quit
     elsif input_words[0] =~ /^add/i
-      puts_cli(add(input_stripped))
+      puts_cli add(input_stripped)
     elsif input_words[0] =~ /^play$/i
-      play(input_stripped)
+      puts_cli play(input_stripped)
     elsif input_words[0] =~ /^show$/i
-      show(input_stripped).each do |s|
-        puts s
-      end
+      puts_cli show(input_stripped)
     end
   end
 
   def add(input)
-    command, title, artist = /^(\S+)\s+"(.*?)"\s+"(.*?)"/.match(input).captures
+    command, title, artist = /^(\S+)\s+"(.*?)".*"(.*?)"/.match(input).captures
     @music.add({title: title, artist: artist})
     return %Q%Added "#{title}" by #{artist}%
   end
@@ -51,19 +57,41 @@ class Cli
     formatted = []
     docs = []
     words = input.split(/\s+/)
-    if words[1] =~ /^all$/i
+
+    # show all
+
+    if words[1] =~ /^all$/i && words[2] == nil
       @music.read('all').each do |index, doc|
         docs.push(doc)
       end
-    elsif words[1] =~ /^unplayed$/i
-      @music.read({unplayed: true}).each do |index, doc|
+
+    # show all by
+
+    elsif words[1] =~ /^all$/i && words[2] =~ /^by$/i
+      artist = /^.*"(.*?)"/.match(input).captures[0]
+      @music.read({artist: artist}).each do |record|
+        docs.push(record)
       end
+
+    # show unplayed
+
+    elsif words[1] =~ /^unplayed$/i && words[2] == nil
+      @music.read({unplayed: true}).each do |index, doc|
+        docs.push(doc)
+      end
+
+    # show unplayed by
+
+    elsif words[1] =~ /^unplayed$/i && words[2] =~ /^by$/i
     end
 
-    # format
+    # format documents for output
 
     docs.each do |doc|
       line = %Q%"#{doc[:title]}" by #{doc[:artist]}%
+      if words[1] == 'all'
+        line += " (#{doc[:played] ? "played" : "unplayed"}) "
+      end
       formatted.push(line)
     end
     return formatted

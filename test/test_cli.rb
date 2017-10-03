@@ -24,6 +24,14 @@ class CliTest < Minitest::Test
     assert_equal 2, shown.length
   end
 
+  def test_show_all_by
+    assert_match %r%Added%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
+    assert_match %r%Added%, @cli.add(%Q%add "#{@title}x" "#{@artist}"%)
+    assert_match %r%Added%, @cli.add(%Q%add "#{@title}x" "#{@artist}x"%)
+    shown = @cli.show(%Q%show all by "#{@artist}"%)
+    assert_equal 2, shown.length
+  end
+
   def test_quit
       assert_raises SystemExit do
         @cli.quit
@@ -36,6 +44,14 @@ class CliTest < Minitest::Test
       @cli.puts_cli(string)
     end
     assert_match %r%#{string}%, out
+
+    array = ["hi", "there"]
+    out, err = capture_io do
+      @cli.puts_cli(array)
+    end
+    array.each do |i|
+      assert_match %r%#{i}%, out
+    end
   end
 
   def test_command_compile
