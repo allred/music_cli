@@ -12,4 +12,9 @@ class MusicCollectionTest < Minitest::Test
     assert_equal 1, @mc.size 
   end
 
+  def test_show_all
+    @mc.add({artist: "Meshuggah", title: "Nothing"})
+    assert_equal 1, @mc.show('all').length
+  end
+
 end

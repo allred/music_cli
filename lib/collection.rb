@@ -20,7 +20,7 @@ class Collection
     return @collection if query == 'all'
     raise TypeError unless query.is_a? Hash
     results = []
-    @collection.values.each do |doc|
+    @collection.each do |key, doc|
 
       # skip document if none of the query keys are in the document
       # or if the query has more keys than the document
@@ -33,11 +33,11 @@ class Collection
       # or ensure the key/values of query are found in the document and add it
 
       if doc == query
-        results.push(doc)
+        results.push(Hash[key, doc])
       else
         query.keys.each do |qk|
           if doc.has_key?(qk) && doc.fetch(qk) == query.fetch(qk)
-            results.push(doc)
+            results.push(Hash[key, doc])
           end
         end
       end
@@ -45,8 +45,11 @@ class Collection
     return results
   end
 
-  def update()
-    raise NotImplementedError
+  def update(query, merge_hash)
+    read(query).each do |r|
+      r[r.keys[0]].merge!(merge_hash)
+      @collection.merge!(r)
+    end
   end
 
   def delete()

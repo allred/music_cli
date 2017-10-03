@@ -33,7 +33,7 @@ class CollectionTest < Minitest::Test
     @collection.create(query)
     @collection.create({test2: "that"})
     result = @collection.read(query)
-    assert_equal result, [query]
+    assert_equal result, [{1 => query}]
   end
 
   def test_read_multi_item
@@ -49,8 +49,18 @@ class CollectionTest < Minitest::Test
   def test_query_length_longer_than_doc
     query = {one: 1, two: 2, three: 3}
     @collection.create({one: 1, two: 2})
-    result = @collection.read(query)
-    assert_equal result.length, 0
+    results = @collection.read(query)
+    assert_equal results.length, 0
+  end
+
+  def test_update
+    query = {one: 1, two: 2}
+    @collection.create(query)
+    assert_equal 1, @collection.size
+    result_update = @collection.update(query, {one: 3})
+    result_read = @collection.read({two: 2})
+    expected = [{1 => {one: 3, two: 2}}]
+    assert_equal expected, result_read
   end
 
 end
