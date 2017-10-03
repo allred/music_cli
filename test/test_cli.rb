@@ -12,9 +12,14 @@ class CliTest < Minitest::Test
   def teardown
   end
 
-  def test_add_success
+  def test_add_valid
     assert_equal %Q%Added "#{@title}" by #{@artist}%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
     assert_equal 1, @cli.music.size
+  end
+
+  def test_add_invalid
+    refute_equal %Q%Added "#{@title}" by #{@artist}%, @cli.add(%Q%add "#{@title}" #{@artist}%)
+    assert_equal 0, @cli.music.size
   end
 
   def test_show_all

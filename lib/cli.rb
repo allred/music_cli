@@ -45,9 +45,13 @@ class Cli
   end
 
   def add(input)
-    command, title, artist = /^(\S+)\s+"(.*?)".*"(.*?)"/.match(input).captures
-    @music.add({title: title, artist: artist})
-    return %Q%Added "#{title}" by #{artist}%
+    begin
+      command, title, artist = /^(\S+)\s+"(.*?)".*"(.*?)"/.match(input).captures
+      @music.add({title: title, artist: artist})
+      return %Q%Added "#{title}" by #{artist}%
+    rescue
+      return %Q%Failed to add item, syntax is: add "title" "artist"%
+    end
   end
 
   def play
@@ -88,9 +92,10 @@ class Cli
     # format documents for output
 
     docs.each do |doc|
-      line = %Q%"#{doc[:title]}" by #{doc[:artist]}%
+      entry = doc.values[0]
+      line = %Q%"#{entry[:title]}" by #{entry[:artist]}%
       if words[1] == 'all'
-        line += " (#{doc[:played] ? "played" : "unplayed"}) "
+        line += " (#{entry[:played] ? "played" : "unplayed"}) "
       end
       formatted.push(line)
     end
