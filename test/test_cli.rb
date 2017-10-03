@@ -60,7 +60,22 @@ class CliTest < Minitest::Test
     assert_equal 0, shown.length
   end
 
-  def test_play
+  def test_play_valid
+    assert_match %r%Added%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
+    assert_equal 1,  @cli.show(%Q%show all by "#{@artist}"%).length
+    @cli.play(%Q%play "#{@title}"%)
+    @cli.show("show all").each do |e|
+      assert_match %r%\(played\)%, e
+    end
+  end
+
+  def test_play_invalid
+    assert_match %r%Added%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
+    assert_equal 1,  @cli.show(%Q%show all by "#{@artist}"%).length
+    @cli.play(%Q%play #{@title}%)
+    @cli.show("show all").each do |e|
+      refute_match %r%\(played\)%, e
+    end
   end
 
   def test_quit

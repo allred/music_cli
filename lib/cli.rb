@@ -54,7 +54,13 @@ class Cli
     end
   end
 
-  def play
+  def play(input)
+    begin
+      command, title = /^(\S+)\s+"(.*?)"/.match(input).captures
+      @music.update({title: title}, {played: true})
+    rescue
+      return %Q%Failed to play item, syntax is: play "title"%
+    end
   end
 
   def show(input)
