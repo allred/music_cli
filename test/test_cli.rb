@@ -19,6 +19,12 @@ class CliTest < Minitest::Test
     assert_equal 0, @cli.music.size
   end
 
+  def test_add_prevent_dupe
+    assert_equal %Q%Added "#{@title}" by #{@artist}%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
+    assert_equal %Q%Duplicate title "#{@title}" was not added%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
+    assert_equal 1, @cli.music.size
+  end
+
   def test_show_all
     assert_match %r%Added%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
     assert_match %r%Added%, @cli.add(%Q%add "#{@title}x" "#{@artist}x"%)
@@ -29,7 +35,6 @@ class CliTest < Minitest::Test
   def test_show_all_by_valid
     assert_match %r%Added%, @cli.add(%Q%add "#{@title}" "#{@artist}"%)
     assert_match %r%Added%, @cli.add(%Q%add "#{@title}x" "#{@artist}"%)
-    assert_match %r%Added%, @cli.add(%Q%add "#{@title}x" "#{@artist}x"%)
     shown = @cli.show(%Q%show all by "#{@artist}"%)
     assert_equal 2, shown.length
   end

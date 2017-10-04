@@ -47,8 +47,12 @@ class Cli
   def add(input)
     begin
       command, title, artist = /^(\S+)\s+"(.*?)".*"(.*?)"/.match(input).captures
-      @music.add({title: title, artist: artist})
-      return %Q%Added "#{title}" by #{artist}%
+      result = @music.add({title: title, artist: artist})
+      if result == nil
+        return %Q%Duplicate title "#{title}" was not added%
+      else
+        return %Q%Added "#{title}" by #{artist}%
+      end
     rescue
       return %Q%Failed to add item, syntax is: add "title" "artist"%
     end
